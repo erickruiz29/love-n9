@@ -16,32 +16,42 @@ export function ColorPlayground({ color, setColor }: ColorPlaygroundProps) {
   const [colors, setColors] = useState<NamedPalette[]>([]);
   const [inputColor, setInputColor] = useState<Color>(color);
   const [inputValue, setInputValue] = useState<string>(color);
-  const RGB = ["#FF0000", "#00FF00", "#0000FF"];
-  const PRIMARY = ["#FF0000", "#0000FF", "#FFFF00"];
-  const [h1, s1, l1] = chroma(PRIMARY[0]).hsl();
-  const [h2, s2, l2] = chroma(PRIMARY[1]).hsl();
-
-  const experimentalColor = chroma(
-    Math.abs((h1 - h2) / 2) % 360,
-    s1,
-    l1,
-    "hsv"
-  ).hex();
+  const [textColor, setTextColor] = useState<Color>("#000000");
+  // const RGB = ["#FF0000", "#00FF00", "#0000FF"];
+  // const PRIMARY = ["#FF0000", "#0000FF", "#FFFF00"];
+  // const colorMixes = [chroma(inputValue).cmyk(), chroma(PRIMARY[1]).cmyk()];
+  // const a = [0,0,0,0]
+  // a[0] = (colorMixes[0][0] + colorMixes[1][0]) / 2
+  // a[1] = (colorMixes[0][1] + colorMixes[1][1]) / 2
+  // a[2] = (colorMixes[0][2] + colorMixes[1][2]) / 2
+  // a[3] = (colorMixes[0][3] + colorMixes[1][3]) / 2
+  // console.log(a)
+  
+  // const experimentalColor = chroma(
+  //   a[0], a[1], a[2], a[3],
+  //   "cmyk"
+  // ).hex();
 
   useEffect(() => {
     setColors(generatePalettesFromColor(inputColor));
+    setTextColor(chroma.contrast(inputColor, "#fff") >
+    chroma.contrast(inputColor, "#000000")
+      ? "#ffffff"
+      : "#000000");
   }, [inputColor]);
+
+        
 
   return (
     <div className="color-playground">
       <div className="palette-container">
-        <div className="palette-title">SECONDARY</div>
+        <div className="palette-title">PRIMARY</div>
         <div className="palette-colors-container">
           <div
             className="palette-color"
-            style={{ backgroundColor: experimentalColor }}
+            style={{ backgroundColor: inputColor, color: textColor }}
           >
-            {experimentalColor}
+            {inputColor}
           </div>
         </div>
       </div>
@@ -52,8 +62,8 @@ export function ColorPlayground({ color, setColor }: ColorPlaygroundProps) {
           name="color"
           type="text"
           onInput={(e) => {
-            if (chroma.valid(inputValue)) {
-              setInputColor(inputValue);
+            if (chroma.valid(e.currentTarget.value)) {
+              setInputColor(e.currentTarget.value);
             }
           }}
         />
