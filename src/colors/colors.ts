@@ -62,14 +62,14 @@ function generateMonochromaticColors(color: Color): Palette {
 // Existing function to generate random colors
 export function getRandomColor() {
     const colors = [
-        '#F16F61', // Coral
-        '#635395', // Purple
-        '#88B04B', // Green
-        '#F1C4C9', // Pink
-        '#92A1D8', // Light Blue
-        '#955251', // Mauve
-        '#B264A3', // Orchid
-        '#009D37', // Teal
+        '#E05351', // Coral
+        '#CA92E1', // Purple
+        '#68E04E', // Green
+        '#E69294', // Pink
+        '#9294E6', // Light Blue
+        '#925150', // Mauve
+        '#E231FF', // Orchid
+        '#3ABBA1', // Teal
     ];
     return colors[Math.floor(Math.random() * colors.length)];
 }
