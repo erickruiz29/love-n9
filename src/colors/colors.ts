@@ -12,13 +12,14 @@ export function generatePalettesFromColor(color: Color): NamedPalette[] {
     ["triadic", generateTriadicColors(color)],
     ["analogous", generateAnalogousColors(color)],
     ["tetradic", generateTetradicColors(color)],
-    ["monochromatic", generateMonochromaticColors(color)]
+    ["monochromatic", generateMonochromaticColors(color)],
+    ["gradient", getGradientColor(color, generateComplementaryColors(color)[1], 5)]
   ];
 }
 
 function generateComplementaryColors(color: Color): Palette {
   const [h, s, l] = chroma(color).hsl();
-  const complementaryColor = chroma((h + 180) % 360, s, l, "hsl").hex();
+  const complementaryColor = chroma((h + 180) % 360, s, l > 0.5 ? l - 0.2 : l + 0.2, "hsl").hex();
   return [color, complementaryColor];
 }
 
@@ -56,4 +57,42 @@ function generateMonochromaticColors(color: Color): Palette {
     return chroma(h, s, +((l + add) % 1).toFixed(3), "hsl").hex();
   });
   return monochrome;
+}
+
+// Existing function to generate random colors
+export function getRandomColor() {
+    const colors = [
+        '#F16F61', // Coral
+        '#635395', // Purple
+        '#88B04B', // Green
+        '#F1C4C9', // Pink
+        '#92A1D8', // Light Blue
+        '#955251', // Mauve
+        '#B264A3', // Orchid
+        '#009D37', // Teal
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Updated function to generate a gradient color with more visually appealing colors
+export function getGradientColor(startColor: string , endColor: string, steps: number) {
+    const start = parseInt(startColor.slice(1), 16);
+    const end = parseInt(endColor.slice(1), 16);
+    const r1 = (start >> 16) & 0xff;
+    const g1 = (start >> 8) & 0xff;
+    const b1 = start & 0xff;
+    const r2 = (end >> 16) & 0xff;
+    const g2 = (end >> 8) & 0xff;
+    const b2 = end & 0xff;
+    const stepR = (r2 - r1) / steps;
+    const stepG = (g2 - g1) / steps;
+    const stepB = (b2 - b1) / steps;
+    const gradientColors = [];
+    for (let i = 0; i <= steps; i++) {
+        const r = Math.round(r1 + stepR * i);
+        const g = Math.round(g1 + stepG * i);
+        const b = Math.round(b1 + stepB * i);
+        gradientColors.push(`#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`);
+    }
+    return gradientColors;
 }

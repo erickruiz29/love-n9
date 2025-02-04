@@ -4,18 +4,18 @@ import {
   Color,
   NamedPalette,
   generatePalettesFromColor,
+  getRandomColor,
 } from "../colors/colors";
 import chroma from "chroma-js";
 
 interface ColorPlaygroundProps {
-  color: string;
-  setColor: React.Dispatch<React.SetStateAction<string>>;
+  color?: string;
+  setColor?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export function ColorPlayground({ color, setColor }: ColorPlaygroundProps) {
+export function ColorPlayground({ color = getRandomColor(), setColor }: ColorPlaygroundProps) {
   const [colors, setColors] = useState<NamedPalette[]>([]);
   const [inputColor, setInputColor] = useState<Color>(color);
-  const [inputValue, setInputValue] = useState<string>(color);
   const [textColor, setTextColor] = useState<Color>("#000000");
   // const RGB = ["#FF0000", "#00FF00", "#0000FF"];
   // const PRIMARY = ["#FF0000", "#0000FF", "#FFFF00"];
@@ -26,7 +26,7 @@ export function ColorPlayground({ color, setColor }: ColorPlaygroundProps) {
   // a[2] = (colorMixes[0][2] + colorMixes[1][2]) / 2
   // a[3] = (colorMixes[0][3] + colorMixes[1][3]) / 2
   // console.log(a)
-  
+
   // const experimentalColor = chroma(
   //   a[0], a[1], a[2], a[3],
   //   "cmyk"
@@ -34,18 +34,23 @@ export function ColorPlayground({ color, setColor }: ColorPlaygroundProps) {
 
   useEffect(() => {
     setColors(generatePalettesFromColor(inputColor));
-    setTextColor(chroma.contrast(inputColor, "#fff") >
-    chroma.contrast(inputColor, "#000000")
-      ? "#ffffff"
-      : "#000000");
+    setTextColor(
+      chroma.contrast(inputColor, "#fff") >
+        chroma.contrast(inputColor, "#000000")
+        ? "#ffffff"
+        : "#000000"
+    );
   }, [inputColor]);
-
-        
 
   return (
     <div className="color-playground">
-      <div className="palette-container">
-        <div className="palette-title">PRIMARY</div>
+      <div
+        className="palette-container"
+        onClick={() => {
+          setInputColor(getRandomColor());
+        }}
+      >
+        <div className="palette-title">RANDOM COLOR</div>
         <div className="palette-colors-container">
           <div
             className="palette-color"
@@ -84,11 +89,7 @@ export function ColorPlayground({ color, setColor }: ColorPlaygroundProps) {
                     key={`${palette[0]}_${color}`}
                     className="palette-color"
                     style={{ backgroundColor: color, color: textColor }}
-                    onMouseEnter={(e) => {
-                      setColor(color);
-                    }}
                     onClick={() => {
-                      setInputValue(color);
                       setInputColor(color);
                     }}
                   >
